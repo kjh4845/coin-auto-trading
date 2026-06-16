@@ -1,0 +1,48 @@
+{
+  "schema_version": "trade_log_v1",
+  "trade_id": "trade-0001",
+  "symbol": "BTCUSDT",
+  "side": "LONG",
+  "position_mode": "ONE_WAY",
+  "margin_mode": "ISOLATED",
+  "opened_at": "2026-04-15T00:00:00+00:00",
+  "closed_at": "2026-04-15T00:10:00+00:00",
+  "entry_order_type": "MARKET",
+  "exit_reason": "ATR_TRAIL_EXIT",
+  "policy_version": "policy_v1",
+  "strategy_version": "strategy_v1",
+  "feature_schema_version": "features_v1",
+  "runtime_version": null,
+  "model_base": "rule_only",
+  "adapter_version": null,
+  "dataset_version": null,
+  "review_labeler_version": null,
+  "entry_contract_price_avg": 100000.0,
+  "entry_mark_price": 100000.0,
+  "exit_contract_price_avg": 100250.0,
+  "exit_mark_price": 100240.0,
+  "filled_quantity": 0.01,
+  "leverage_at_entry": 2.0,
+  "filled_entry_notional": 1000.0,
+  "entry_initial_margin_fixed": 500.0,
+  "hard_stop_trigger_loss_usdt": 25.0,
+  "hard_stop_trigger_price_mark": 97500.0,
+  "hard_stop_working_type": "MARK_PRICE",
+  "realized_pnl_usdt": 2.5,
+  "realized_pnl_after_fees_usdt": 1.7,
+  "fees_usdt": 0.8,
+  "slippage_usdt": 0.2,
+  "slippage_bps": 2.0,
+  "max_favorable_excursion_usdt": 5.0,
+  "max_adverse_excursion_usdt": 1.5,
+  "signal_reason_codes": ["trend_alignment", "pullback_reclaim"],
+  "ai_snapshot": null,
+  "atr_trail_history": [
+    {
+      "ts": "2026-04-15T00:09:00+00:00",
+      "trail_price_contract": 100180.0
+    }
+  ],
+  "notes": "rule-only fixture trade"
+}
+

@@ -1,0 +1,2506 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>__ENVIRONMENT_LABEL__ 자동매매 운영 허브</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef1f4;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #111827;
+      --ink-soft: #475467;
+      --muted: #667085;
+      --line: #d8dee8;
+      --line-soft: #e8edf3;
+      --blue: #2563eb;
+      --green: #047857;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --red-soft: #fff1f2;
+      --green-soft: #ecfdf3;
+      --amber-soft: #fffbeb;
+      --blue-soft: #eff6ff;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Pretendard Variable", "SUIT Variable", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      padding: 14px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .shell {
+      max-width: 1520px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .topbar,
+    .panel,
+    .metric {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .top-title {
+      display: grid;
+      gap: 8px;
+    }
+
+    .eyebrow-row,
+    .top-actions,
+    .inline-row,
+    .chip-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .env-pill,
+    .status-pill,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      padding: 7px 10px;
+      white-space: nowrap;
+    }
+
+    .env-pill::before,
+    .status-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    body[data-environment="mainnet"] .env-pill {
+      color: var(--red);
+      border-color: #fecdd3;
+      background: var(--red-soft);
+    }
+
+    .tone-ok {
+      color: var(--green);
+      background: var(--green-soft);
+      border-color: #bbf7d0;
+    }
+
+    .tone-warn {
+      color: var(--amber);
+      background: var(--amber-soft);
+      border-color: #fed7aa;
+    }
+
+    .tone-danger {
+      color: var(--red);
+      background: var(--red-soft);
+      border-color: #fecdd3;
+    }
+
+    .tone-neutral {
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-color: #bfdbfe;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .subline {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .symbol-box {
+      display: grid;
+      grid-template-columns: 110px 148px auto;
+      align-items: center;
+      gap: 8px;
+      min-width: 360px;
+    }
+
+    .range-box {
+      display: grid;
+      grid-template-columns: 74px 112px 92px;
+      align-items: center;
+      gap: 8px;
+      min-width: 286px;
+    }
+
+    .symbol-tabs,
+    .symbol-overview {
+      display: grid;
+      gap: 8px;
+    }
+
+    .symbol-tabs {
+      grid-template-columns: repeat(3, minmax(96px, max-content));
+      align-items: center;
+    }
+
+    .symbol-tab-button {
+      min-height: 34px;
+      padding: 0 11px;
+      background: var(--surface-soft);
+      color: var(--ink-soft);
+    }
+
+    .symbol-tab-button[aria-selected="true"] {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .symbol-overview {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .symbol-card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .symbol-card[aria-selected="true"] {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+    }
+
+    .symbol-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .symbol-card-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .symbol-card-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select {
+      min-width: 0;
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    button {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 12px;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    button:hover {
+      border-color: #93c5fd;
+      background: var(--blue-soft);
+    }
+
+    button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #ffffff;
+    }
+
+    button.ok {
+      border-color: #bbf7d0;
+      background: var(--green-soft);
+      color: #065f46;
+    }
+
+    button.warn {
+      border-color: #fed7aa;
+      background: var(--amber-soft);
+      color: #92400e;
+    }
+
+    button.danger {
+      border-color: #fecdd3;
+      background: var(--red-soft);
+      color: #991b1b;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.45fr) repeat(4, minmax(160px, 0.55fr));
+      gap: 14px;
+    }
+
+    .metric {
+      min-height: 164px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .metric.main {
+      background: #101828;
+      color: #ffffff;
+      border-color: #101828;
+    }
+
+    .metric.main .subline,
+    .metric.main .mini-label {
+      color: #cbd5e1;
+    }
+
+    .metric-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mini-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .big-value {
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: 0;
+      word-break: keep-all;
+    }
+
+    .metric.main .big-value {
+      font-size: 42px;
+    }
+
+    .reason-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-header h2 {
+      font-size: 19px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .panel-header h3,
+    .section-title h3 {
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .section-title {
+      display: grid;
+      gap: 4px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .exposure-grid,
+    .summary-grid,
+    .risk-grid,
+    .service-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .exposure-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .risk-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .service-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stat-line,
+    .kv-row,
+    .service-row,
+    .trade-row,
+    .timeline-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .stat-line:first-child,
+    .kv-row:first-child,
+    .service-row:first-child,
+    .trade-row:first-child,
+    .timeline-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .stat-box {
+      display: grid;
+      gap: 6px;
+      min-height: 96px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: var(--surface-soft);
+    }
+
+    .stat-box .value {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 0;
+      word-break: break-word;
+    }
+
+    .stat-box .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .kv-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .kv-row,
+    .service-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 0.55fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      font-size: 14px;
+    }
+
+    .kv-row .label,
+    .service-row .label {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .kv-row .value,
+    .service-row .value {
+      min-width: 0;
+      color: var(--ink);
+      font-weight: 800;
+      word-break: break-word;
+      line-height: 1.45;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 10px;
+    }
+
+    .tab-button {
+      min-height: 34px;
+      background: var(--surface-soft);
+      color: var(--ink-soft);
+    }
+
+    .tab-button[aria-selected="true"] {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pnl-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pnl-box {
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+      background: var(--surface-soft);
+    }
+
+    .pnl-box .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pnl-box .value {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .equity-chart-panel {
+      gap: 12px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 240px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+      overflow: hidden;
+    }
+
+    .chart-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 240px;
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .legend-swatch.wallet {
+      background: var(--green);
+    }
+
+    .value-positive {
+      color: var(--green);
+    }
+
+    .value-negative {
+      color: var(--red);
+    }
+
+    .trade-row {
+      display: grid;
+      grid-template-columns: 0.9fr 0.55fr 0.8fr 1.2fr;
+      gap: 12px;
+      align-items: start;
+      font-size: 14px;
+    }
+
+    .trade-row strong,
+    .timeline-item strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-item {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .timeline-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .time {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .action-groups {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .action-group {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .action-group h3 {
+      font-size: 15px;
+    }
+
+    .action-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    details > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 13px 14px;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    pre {
+      margin: 0;
+      padding: 0 14px 14px;
+      max-height: 360px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #344054;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .status-line {
+      min-height: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 0 2px 10px;
+    }
+
+    @media (max-width: 1180px) {
+      .topbar,
+      .metric-grid,
+      .workspace-grid,
+      .symbol-overview {
+        grid-template-columns: 1fr;
+      }
+
+      .symbol-box {
+        min-width: 0;
+      }
+
+      .range-box {
+        min-width: 0;
+      }
+
+      .exposure-grid,
+      .summary-grid,
+      .action-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 10px;
+      }
+
+      .topbar,
+      .panel,
+      .metric {
+        padding: 14px;
+      }
+
+      .symbol-box,
+      .range-box,
+      .symbol-tabs,
+      .exposure-grid,
+      .summary-grid,
+      .risk-grid,
+      .pnl-strip,
+      .action-groups,
+      .trade-row,
+      .kv-row,
+      .service-row,
+      .timeline-top {
+        grid-template-columns: 1fr;
+      }
+
+      .metric.main .big-value {
+        font-size: 34px;
+      }
+
+      .time {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body data-environment="__ENVIRONMENT__">
+  <div class="shell">
+    <header class="topbar" data-testid="ops-overview">
+      <div class="top-title">
+        <div class="eyebrow-row">
+          <span class="env-pill" id="environmentBadge">__ENVIRONMENT_LABEL__</span>
+          <span class="status-pill tone-neutral" id="servicePill">서비스 확인 중</span>
+          <span class="status-pill tone-neutral" id="exchangePill">거래소 확인 중</span>
+        </div>
+        <h1 data-testid="page-title">자동매매 허브</h1>
+        <p class="subline" id="headlineSubtext">BTCUSDT · best_pair_v1 · rule-only</p>
+        <div class="symbol-tabs" id="symbolTabs" data-testid="symbol-tabs"></div>
+      </div>
+      <div class="top-actions">
+        <div class="symbol-box">
+          <label for="symbol">심볼</label>
+          <input id="symbol" value="__DEFAULT_SYMBOL__" />
+          <button class="primary" id="refreshAllButton">새로고침</button>
+        </div>
+        <div class="range-box">
+          <label for="displayRange">표시 기간</label>
+          <select id="displayRange" aria-label="표시 기간">
+            <option value="24">24시간</option>
+            <option value="168">7일</option>
+            <option value="720">30일</option>
+            <option value="2160">90일</option>
+            <option value="8760">1년</option>
+            <option value="0">전체</option>
+            <option value="custom">직접</option>
+          </select>
+          <input id="displayRangeDays" type="number" min="1" max="3650" step="1" value="7" aria-label="표시 기간 일수" />
+        </div>
+        <span class="chip" id="displayRangeValue">7일</span>
+        <span class="chip" id="lastRefreshValue">갱신 전</span>
+      </div>
+    </header>
+
+    <section class="symbol-overview" id="symbolOverview" data-testid="symbol-overview"></section>
+
+    <section class="metric-grid">
+      <article class="metric main" data-testid="trade-readiness-card">
+        <div class="metric-head">
+          <span class="mini-label">거래 가능 여부</span>
+          <span class="status-pill tone-neutral" id="readinessBadge">확인 중</span>
+        </div>
+        <div class="big-value" id="readinessValue">확인 중</div>
+        <p class="subline" id="readinessSubtext">런타임, 서비스, 거래소, 리스크를 동시에 확인합니다.</p>
+        <div class="reason-list" id="readinessReasons"></div>
+      </article>
+
+      <article class="metric">
+        <div class="metric-head">
+          <span class="mini-label">자동 루프</span>
+          <span class="status-pill tone-neutral" id="mainnetServiceBadge">확인 중</span>
+        </div>
+        <div class="big-value" id="mainnetServiceValue">확인 중</div>
+        <div class="kv-list" id="mainnetServiceMeta"></div>
+      </article>
+
+      <article class="metric" data-testid="runtime-state-card">
+        <div class="metric-head">
+          <span class="mini-label">런타임</span>
+          <span class="status-pill tone-neutral" id="runtimeStateBadge">확인 중</span>
+        </div>
+        <div class="big-value" id="runtimeStateValue" data-testid="runtime-state-value">확인 중</div>
+        <div class="kv-list" id="runtimeStateMeta"></div>
+      </article>
+
+      <article class="metric" data-testid="risk-state-card">
+        <div class="metric-head">
+          <span class="mini-label">리스크</span>
+          <span class="status-pill tone-neutral" id="riskStatusBadge">확인 중</span>
+        </div>
+        <div class="big-value" id="riskCapValue" data-testid="risk-cap-value">-</div>
+        <div class="kv-list" id="riskStatusMeta"></div>
+      </article>
+
+      <article class="metric" data-testid="account-usdt-card">
+        <div class="metric-head">
+          <span class="mini-label">USDT 계좌</span>
+          <span class="status-pill tone-neutral" id="accountStatusBadge">확인 중</span>
+        </div>
+        <div class="big-value" id="accountAvailableValue">-</div>
+        <div class="kv-list" id="accountStatusMeta"></div>
+      </article>
+    </section>
+
+    <section class="panel equity-chart-panel" data-testid="account-equity-chart-card">
+      <div class="panel-header">
+        <div class="section-title">
+          <h2>USDT 시드 추이</h2>
+          <p>Margin balance 기준, Wallet balance 보조 표시</p>
+        </div>
+        <span class="status-pill tone-neutral" id="accountEquityBadge">확인 중</span>
+      </div>
+      <div class="pnl-strip" id="accountEquitySummary"></div>
+      <div class="chart-wrap">
+        <canvas id="accountEquityChart" aria-label="USDT 계좌 시드 추이"></canvas>
+      </div>
+      <div class="chart-legend">
+        <span class="legend-item"><span class="legend-swatch"></span>Margin balance</span>
+        <span class="legend-item"><span class="legend-swatch wallet"></span>Wallet balance</span>
+      </div>
+      <p class="subline" id="accountEquityNote">계좌 스냅샷을 불러오는 중입니다.</p>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div class="section-title">
+            <h2>실시간 노출</h2>
+            <p>거래소 원격 상태 기준</p>
+          </div>
+          <span class="status-pill tone-neutral" id="exchangeStatusBadge">확인 중</span>
+        </div>
+        <div class="exposure-grid">
+          <div class="stat-box">
+            <div class="label">포지션</div>
+            <div class="value" id="exposurePositionValue">-</div>
+            <div class="subtext" id="exposurePositionMeta">확인 중</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">일반 주문</div>
+            <div class="value" id="exposureOrdersValue">-</div>
+            <div class="subtext">열린 일반 주문</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">보호 / 알고 주문</div>
+            <div class="value" id="exposureAlgoValue">-</div>
+            <div class="subtext">열린 보호/알고 주문</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">계정 설정</div>
+            <div class="value" id="exchangeConfigValue">-</div>
+            <div class="subtext" id="exchangeConfigMeta">레버리지 / 마진 / 모드</div>
+          </div>
+        </div>
+        <div class="kv-list" id="remoteStatePanel">
+          <div class="empty">거래소 상태를 불러오는 중입니다.</div>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="section-title">
+            <h2>서비스 / 전략</h2>
+            <p>자동실행과 룰 프로필</p>
+          </div>
+          <span class="status-pill tone-ok">rule-only</span>
+        </div>
+        <div class="kv-list" id="serviceList"></div>
+        <div class="kv-list" id="strategyList"></div>
+      </aside>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div class="section-title">
+            <h2>리스크 차단</h2>
+            <p>자동 정지와 최근 24시간 손익</p>
+          </div>
+          <span class="status-pill tone-neutral" id="lockoutBadge">확인 중</span>
+        </div>
+        <div class="risk-grid">
+          <div class="kv-list" id="riskDetailPanel"></div>
+          <div class="kv-list" id="lockoutPanel"></div>
+        </div>
+      </article>
+
+      <article class="panel" data-testid="performance-summary-card">
+        <div class="panel-header">
+          <div class="section-title">
+            <h3>누적 성과 요약</h3>
+            <p>Binance 실제 income + 로컬 종료 기록</p>
+          </div>
+        </div>
+        <div class="pnl-strip" id="performanceHighlightStrip"></div>
+        <div class="kv-list" id="exchangeIncomePanel"></div>
+        <p class="subline" id="exchangeIncomeNote"></p>
+        <div class="kv-list" id="performanceSummaryPanel"></div>
+        <p class="subline" id="performanceNote"></p>
+      </article>
+    </section>
+
+    <section class="workspace-grid">
+      <article class="panel" data-testid="recent-trade-ledger-card">
+        <div class="panel-header">
+          <div class="section-title">
+            <h3>최근 거래 추정손익</h3>
+            <p>로컬 청산 기록과 자동 리뷰</p>
+          </div>
+        </div>
+        <div id="tradeLedgerPanel"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div class="section-title">
+            <h2>손실 리뷰</h2>
+            <p>손실 발생 후 자동 분석 결과</p>
+          </div>
+        </div>
+        <div id="reviewList" class="timeline-list"></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="tabs" role="tablist" aria-label="운영 패널">
+        <button class="tab-button" role="tab" aria-selected="true" data-tab="state">현재 상태</button>
+        <button class="tab-button" role="tab" aria-selected="false" data-tab="activity">최근 이벤트</button>
+        <button class="tab-button" role="tab" aria-selected="false" data-tab="actions">수동 조작</button>
+        <button class="tab-button" role="tab" aria-selected="false" data-tab="raw">원본 데이터</button>
+      </div>
+
+      <section class="tab-panel active" data-tab-panel="state">
+        <div class="summary-grid">
+          <div>
+            <div class="section-title">
+              <h3>기대 상태</h3>
+              <p>로컬 기준 주문/포지션 추적값</p>
+            </div>
+            <div class="kv-list" id="expectedStatePanel"></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <h3>관리 중 포지션</h3>
+              <p>포지션 매니저 상태</p>
+            </div>
+            <div class="kv-list" id="managedStatePanel"></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <h3>마지막 스냅샷</h3>
+              <p>리컨실 결과</p>
+            </div>
+            <div class="kv-list" id="snapshotPanel"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="activity">
+        <div class="summary-grid">
+          <div>
+            <div class="section-title">
+              <h3>최근 incident</h3>
+              <p>모니터와 안전 이벤트</p>
+            </div>
+            <div id="incidentList" class="timeline-list"></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <h3>주문 / 포지션 이벤트</h3>
+              <p>체결과 원격 변화</p>
+            </div>
+            <div id="eventList" class="timeline-list"></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <h3>운영 로그</h3>
+              <p>허브 요청 상태</p>
+            </div>
+            <div class="kv-list" id="operationLogPanel"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="actions">
+        <div class="action-groups">
+          <div class="action-group">
+            <h3>상태 점검</h3>
+            <div class="action-buttons">
+              <button class="primary" data-action="runtime_summary">요약 새로고침</button>
+              <button data-action="remote_state">거래소 상태 새로고침</button>
+              <button data-action="ensure_config">거래소 설정 맞추기</button>
+              <button data-action="monitor_once">모니터 1회 실행</button>
+              <button data-action="manage_position_once">포지션 관리 1회</button>
+              <button class="ok" data-action="auto_cycle_once">자동 사이클 1회</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <h3>스트림</h3>
+            <div class="action-buttons">
+              <button data-action="user_stream_start">유저 스트림 시작</button>
+              <button data-action="user_stream_keepalive">유저 스트림 연장</button>
+              <button data-action="user_stream_close">유저 스트림 종료</button>
+            </div>
+          </div>
+          <div class="action-group">
+            <h3>정지 / 재개</h3>
+            <div class="action-buttons">
+              <button class="warn" data-action="manual_pause">수동 일시정지</button>
+              <button class="ok" data-action="manual_resume">수동 재개</button>
+              <button class="danger" data-action="clear_expected_state">로컬 추적 상태 초기화</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="raw">
+        <div class="summary-grid">
+          <details>
+            <summary>요약 JSON</summary>
+            <pre id="summaryRaw"></pre>
+          </details>
+          <details>
+            <summary>원격 상태 JSON</summary>
+            <pre id="remoteStateRaw"></pre>
+          </details>
+          <details>
+            <summary>스냅샷 JSON</summary>
+            <pre id="snapshotRaw"></pre>
+          </details>
+        </div>
+      </section>
+    </section>
+
+    <div class="status-line" id="statusLine">허브 준비 중...</div>
+  </div>
+
+  <script>
+    const DEFAULT_SYMBOL = "__DEFAULT_SYMBOL__";
+    const SYMBOLS = __SYMBOLS_JSON__;
+    const ENVIRONMENT = "__ENVIRONMENT__";
+    const ENVIRONMENT_LABEL = "__ENVIRONMENT_LABEL__";
+    const AUTO_REFRESH_MS = 60000;
+    const DEFAULT_DISPLAY_HOURS = 168;
+    const DISPLAY_RANGE_STORAGE_KEY = "aiAutoTradingHubDisplayHours";
+    const DISPLAY_RANGE_PRESETS = new Set(["24", "168", "720", "2160", "8760", "0"]);
+
+    const actionLabels = {
+      runtime_summary: "요약 새로고침",
+      remote_state: "거래소 상태 새로고침",
+      ensure_config: "거래소 설정 맞추기",
+      monitor_once: "모니터 1회 실행",
+      manage_position_once: "포지션 관리 1회",
+      auto_cycle_once: "자동 사이클 1회",
+      user_stream_start: "유저 스트림 시작",
+      user_stream_keepalive: "유저 스트림 연장",
+      user_stream_close: "유저 스트림 종료",
+      manual_pause: "수동 일시정지",
+      manual_resume: "수동 재개",
+      clear_expected_state: "로컬 추적 상태 초기화",
+    };
+
+    const runtimeStateLabels = {
+      READY: "진입 대기",
+      RECONCILING: "동기화 중",
+      ENTRY_PENDING: "진입 처리 중",
+      PAUSED: "일시정지",
+      PROTECTED: "포지션 보호",
+      ERROR: "오류",
+      IDLE: "대기 전",
+    };
+
+    const lockoutLabels = {
+      manual_pause: "수동 일시정지",
+      manual_review_required: "운영자 검토 필요",
+      repeated_loss_pattern_review: "반복 손실 패턴 검토",
+      orphan_remote_state: "원격 고아 포지션",
+      missing_protective_stop: "보호 주문 누락",
+      daily_loss_limit_breached: "일일 손실 한도 초과",
+      consecutive_loss_limit: "연속 손실 한도 초과",
+      recent_loss_cooldown: "손실 후 쿨다운",
+      stale_mark_price_stream: "마크프라이스 지연",
+      stale_user_stream: "유저 스트림 지연",
+      kline_stream_stale: "5분봉 스트림 지연",
+      mark_price_stream_stale: "마크프라이스 스트림 지연",
+      runtime_monitor_stale: "런타임 모니터 지연",
+      runtime_background_task_failed: "백그라운드 태스크 실패",
+    };
+
+    const levelTones = {
+      INFO: "tone-neutral",
+      WARNING: "tone-warn",
+      ERROR: "tone-danger",
+      CRITICAL: "tone-danger",
+    };
+
+    const state = {
+      summary: null,
+      summariesBySymbol: {},
+      remoteState: null,
+      remoteStatesBySymbol: {},
+      accountStatus: null,
+      accountEquityHistory: null,
+      accountIncomeSummary: null,
+      displayHours: DEFAULT_DISPLAY_HOURS,
+      services: null,
+      lastRefreshAt: null,
+      operationLog: [],
+    };
+
+    const statusLine = document.getElementById("statusLine");
+    const symbolInput = document.getElementById("symbol");
+    const refreshAllButton = document.getElementById("refreshAllButton");
+    const displayRangeSelect = document.getElementById("displayRange");
+    const displayRangeDaysInput = document.getElementById("displayRangeDays");
+    const displayRangeValue = document.getElementById("displayRangeValue");
+
+    function currentSymbol() {
+      return (symbolInput.value.trim() || DEFAULT_SYMBOL).toUpperCase();
+    }
+
+    function configuredSymbols() {
+      const symbols = Array.isArray(SYMBOLS) && SYMBOLS.length > 0 ? SYMBOLS : [DEFAULT_SYMBOL];
+      return symbols.map((symbol) => String(symbol).toUpperCase());
+    }
+
+    function selectedSummary() {
+      return state.summariesBySymbol[currentSymbol()] || state.summary;
+    }
+
+    function selectedRemoteState() {
+      return state.remoteStatesBySymbol[currentSymbol()] || state.remoteState;
+    }
+
+    function normalizeDisplayHours(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric < 0) {
+        return DEFAULT_DISPLAY_HOURS;
+      }
+      return Math.min(numeric, 3650 * 24);
+    }
+
+    function readStoredDisplayHours() {
+      try {
+        const stored = window.localStorage.getItem(DISPLAY_RANGE_STORAGE_KEY);
+        return stored === null ? DEFAULT_DISPLAY_HOURS : normalizeDisplayHours(stored);
+      } catch (_) {
+        return DEFAULT_DISPLAY_HOURS;
+      }
+    }
+
+    function writeStoredDisplayHours(value) {
+      try {
+        window.localStorage.setItem(DISPLAY_RANGE_STORAGE_KEY, String(value));
+      } catch (_) {
+        return;
+      }
+    }
+
+    function displayRangeLabel(hours = state.displayHours) {
+      const numeric = Number(hours);
+      if (numeric <= 0) {
+        return "전체";
+      }
+      if (numeric < 24) {
+        return `${numeric.toFixed(0)}시간`;
+      }
+      const days = numeric / 24;
+      return Number.isInteger(days) ? `${days}일` : `${numeric.toFixed(0)}시간`;
+    }
+
+    function syncDisplayRangeControls({ persist = false } = {}) {
+      const selected = displayRangeSelect.value;
+      const hours = selected === "custom"
+        ? normalizeDisplayHours(Number(displayRangeDaysInput.value || 1) * 24)
+        : normalizeDisplayHours(selected);
+      state.displayHours = hours;
+      displayRangeDaysInput.disabled = selected !== "custom";
+      if (selected !== "custom") {
+        displayRangeDaysInput.value = hours > 0 ? String(Math.max(1, Math.round(hours / 24))) : "";
+      }
+      displayRangeValue.textContent = displayRangeLabel(hours);
+      if (persist) {
+        writeStoredDisplayHours(hours);
+      }
+    }
+
+    function initializeDisplayRangeControls() {
+      const storedHours = readStoredDisplayHours();
+      const storedValue = String(storedHours);
+      if (DISPLAY_RANGE_PRESETS.has(storedValue)) {
+        displayRangeSelect.value = storedValue;
+      } else {
+        displayRangeSelect.value = "custom";
+        displayRangeDaysInput.value = String(Math.max(1, Math.round(storedHours / 24)));
+      }
+      syncDisplayRangeControls();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function pretty(value) {
+      return JSON.stringify(value ?? null, null, 2);
+    }
+
+    function isFiniteNumber(value) {
+      return typeof value === "number" && Number.isFinite(value);
+    }
+
+    function setStatus(message, isError = false) {
+      statusLine.textContent = message;
+      statusLine.style.color = isError ? "var(--red)" : "var(--muted)";
+      state.operationLog = [
+        { at: Date.now(), message, isError },
+        ...state.operationLog,
+      ].slice(0, 8);
+      renderOperationLog();
+    }
+
+    function setPill(id, text, tone) {
+      const element = document.getElementById(id);
+      element.className = `status-pill ${tone}`;
+      element.textContent = text;
+    }
+
+    function formatDateTime(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return "없음";
+      }
+      return new Intl.DateTimeFormat("ko-KR", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(new Date(numeric));
+    }
+
+    function formatAgo(value) {
+      if (value === null || value === undefined || value === "") {
+        return "없음";
+      }
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric <= 0) {
+        return "없음";
+      }
+      const diffMs = Date.now() - numeric;
+      if (diffMs < 0) {
+        return "방금";
+      }
+      const diffSec = Math.floor(diffMs / 1000);
+      if (diffSec < 60) {
+        return `${diffSec}초 전`;
+      }
+      const diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) {
+        return `${diffMin}분 전`;
+      }
+      const diffHour = Math.floor(diffMin / 60);
+      if (diffHour < 24) {
+        return `${diffHour}시간 전`;
+      }
+      return `${Math.floor(diffHour / 24)}일 전`;
+    }
+
+    function ageMs(value) {
+      if (value === null || value === undefined || value === "") {
+        return null;
+      }
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric <= 0) {
+        return null;
+      }
+      return Math.max(0, Date.now() - numeric);
+    }
+
+    function isOlderThan(value, thresholdMs) {
+      const age = ageMs(value);
+      return age !== null && age > thresholdMs;
+    }
+
+    function timeframeToMs(timeframe) {
+      const match = String(timeframe || "").match(/^(\d+)([mhd])$/);
+      if (!match) {
+        return 5 * 60 * 1000;
+      }
+      const value = Number(match[1]);
+      const unit = match[2];
+      if (unit === "m") return value * 60 * 1000;
+      if (unit === "h") return value * 60 * 60 * 1000;
+      return value * 24 * 60 * 60 * 1000;
+    }
+
+    function runtimeIntervalForSymbol(symbol) {
+      const strategy = state.summariesBySymbol[symbol]?.strategy_context || state.summary?.strategy_context || {};
+      return strategy.runtime_stream_interval_by_symbol?.[symbol]
+        || strategy.runtime_stream_interval
+        || "5m";
+    }
+
+    function klineLabelForSymbol(symbol) {
+      return `${runtimeIntervalForSymbol(symbol)}봉`;
+    }
+
+    function klineStaleThresholdMs(symbol) {
+      return Math.max(10 * 60 * 1000, timeframeToMs(runtimeIntervalForSymbol(symbol)) * 2 + 60 * 1000);
+    }
+
+    function runtimeStaleFlags(runtime, options = {}) {
+      const checkMark = options.checkMark !== false;
+      const klineThresholdMs = options.klineThresholdMs || 10 * 60 * 1000;
+      const flags = {
+        kline: isOlderThan(runtime?.last_execution_kline_close_ms, klineThresholdMs),
+        mark: checkMark && isOlderThan(runtime?.last_mark_price_event_ms, 2 * 60 * 1000),
+        monitor: isOlderThan(runtime?.last_reconcile_ms, 2 * 60 * 1000),
+      };
+      flags.any = flags.kline || flags.mark || flags.monitor;
+      return flags;
+    }
+
+    function staleFlagLabels(flags, symbol = currentSymbol()) {
+      const labels = [];
+      if (flags.kline) labels.push(klineLabelForSymbol(symbol));
+      if (flags.mark) labels.push("마크프라이스");
+      if (flags.monitor) labels.push("리컨실");
+      return labels;
+    }
+
+    function staleIssuesForSymbol(symbol) {
+      if (accountPositionBlockingSymbol(symbol)) {
+        return [];
+      }
+      const summary = state.summariesBySymbol[symbol];
+      const remote = remoteForSymbol(symbol);
+      const exposure = countExposure(remote);
+      const checkMark = Boolean(summary?.expected_state || summary?.managed_trade_state || exposure.positions > 0);
+      const flags = runtimeStaleFlags(summary?.runtime_status || {}, {
+        checkMark,
+        klineThresholdMs: klineStaleThresholdMs(symbol),
+      });
+      return staleFlagLabels(flags, symbol).map((label) => ({
+        symbol,
+        label,
+        chipLabel: `${symbol} ${label} 지연`,
+        tone: "tone-danger",
+      }));
+    }
+
+    function staleIssuesBySymbol() {
+      return configuredSymbols().flatMap((symbol) => staleIssuesForSymbol(symbol));
+    }
+
+    function staleDisplayText(issues) {
+      if (!issues || issues.length === 0) {
+        return "없음";
+      }
+      return issues.map((issue) => issue.label).join(" / ") + " 지연";
+    }
+
+    function formatSignedNumber(value, digits = 2, suffix = "") {
+      if (value === null || value === undefined || value === "") {
+        return "없음";
+      }
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return String(value);
+      }
+      const sign = numeric > 0 ? "+" : "";
+      return `${sign}${numeric.toFixed(digits)}${suffix}`;
+    }
+
+    function formatNumber(value, digits = 2, suffix = "") {
+      if (value === null || value === undefined || value === "") {
+        return "없음";
+      }
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return String(value);
+      }
+      return `${numeric.toFixed(digits)}${suffix}`;
+    }
+
+    function formatPercent(value, digits = 1) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return "없음";
+      }
+      return `${numeric.toFixed(digits)}%`;
+    }
+
+    function formatCooldown(value) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric <= 0) {
+        return "없음";
+      }
+      return `${Math.ceil(numeric / 60000)}분 남음`;
+    }
+
+    function signedValueClass(value) {
+      const numeric = typeof value === "number"
+        ? value
+        : Number.parseFloat(String(value ?? "").replace(/[^0-9.+-]/g, ""));
+      if (!Number.isFinite(numeric) || numeric === 0) {
+        return "";
+      }
+      return numeric > 0 ? "value-positive" : "value-negative";
+    }
+
+    function serviceName(label) {
+      if (label.endsWith(".mainnet-loop")) return "메인넷 루프";
+      if (label.endsWith(".dashboard")) return "허브";
+      if (label.endsWith(".testnet-loop")) return "테스트넷 루프";
+      return label;
+    }
+
+    function serviceStateText(service) {
+      if (!service || !service.loaded) return "꺼짐";
+      if (service.state === "running") return "실행 중";
+      if (service.state === "unloaded") return "꺼짐";
+      return service.state || "확인 필요";
+    }
+
+    function serviceBySuffix(suffix) {
+      return state.services?.services?.find((service) => service.label.endsWith(suffix));
+    }
+
+    function isServiceRunning(service) {
+      return Boolean(service?.loaded && service?.state === "running");
+    }
+
+    function countExposure(remoteState) {
+      const orders = Array.isArray(remoteState?.open_orders) ? remoteState.open_orders.length : 0;
+      const algoOrders = Array.isArray(remoteState?.open_algo_orders) ? remoteState.open_algo_orders.length : 0;
+      const positions = Array.isArray(remoteState?.positions)
+        ? remoteState.positions.filter((position) => Math.abs(Number(position.positionAmt || 0)) > 1e-9).length
+        : 0;
+      return { orders, algoOrders, positions, total: orders + algoOrders + positions };
+    }
+
+    function remoteForSymbol(symbol) {
+      const summary = state.summariesBySymbol[symbol];
+      return state.remoteStatesBySymbol[symbol]
+        || summary?.latest_account_snapshot?.payload?.remote_state;
+    }
+
+    function accountPositionSymbol() {
+      const symbols = configuredSymbols();
+      for (const symbol of symbols) {
+        const summary = state.summariesBySymbol[symbol];
+        const reported = summary?.account_position_symbol;
+        if (reported) return String(reported).toUpperCase();
+      }
+      for (const symbol of symbols) {
+        const summary = state.summariesBySymbol[symbol];
+        const exposure = countExposure(remoteForSymbol(symbol));
+        if (summary?.expected_state || summary?.managed_trade_state || exposure.positions > 0) {
+          return symbol;
+        }
+      }
+      return null;
+    }
+
+    function accountPositionBlockingSymbol(symbol) {
+      const activeSymbol = accountPositionSymbol();
+      const target = String(symbol || "").toUpperCase();
+      return activeSymbol && activeSymbol !== target ? activeSymbol : null;
+    }
+
+    function renderRows(targetId, rows, emptyMessage = "표시할 내용이 없습니다.") {
+      const target = document.getElementById(targetId);
+      if (!rows || rows.length === 0) {
+        target.innerHTML = `<div class="empty">${escapeHtml(emptyMessage)}</div>`;
+        return;
+      }
+      target.innerHTML = rows.map((row) => `
+        <div class="kv-row">
+          <div class="label">${escapeHtml(row.label)}</div>
+          <div class="value ${row.className || ""}">${escapeHtml(row.value)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderChips(targetId, chips, emptyMessage) {
+      const target = document.getElementById(targetId);
+      if (!chips || chips.length === 0) {
+        target.innerHTML = emptyMessage ? `<span class="chip">${escapeHtml(emptyMessage)}</span>` : "";
+        return;
+      }
+      target.innerHTML = chips.map((chip) => `
+        <span class="chip ${chip.tone || ""}">${escapeHtml(chip.label)}</span>
+      `).join("");
+    }
+
+    function renderEmpty(targetId, message) {
+      document.getElementById(targetId).innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
+    }
+
+    function renderSymbolTabs() {
+      const symbols = configuredSymbols();
+      const current = currentSymbol();
+      document.getElementById("symbolTabs").innerHTML = symbols.map((symbol, index) => `
+        <button
+          class="symbol-tab-button"
+          type="button"
+          data-symbol-tab="${escapeHtml(symbol)}"
+          aria-selected="${String(symbol === current)}"
+          title="${escapeHtml(index === 0 ? "1순위" : `${index + 1}순위`)}"
+        >
+          ${escapeHtml(index + 1)}. ${escapeHtml(symbol)}
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-symbol-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          symbolInput.value = button.dataset.symbolTab || DEFAULT_SYMBOL;
+          state.summary = selectedSummary();
+          state.remoteState = selectedRemoteState();
+          refreshAll({ includeRemote: true }).catch((error) => setStatus(error.message, true));
+        });
+      });
+    }
+
+    function symbolRuntimeStateText(summary) {
+      const runtimeState = summary?.runtime_status?.state || "IDLE";
+      return runtimeStateLabels[runtimeState] || runtimeState;
+    }
+
+    function renderSymbolOverview() {
+      const current = currentSymbol();
+      const cards = configuredSymbols().map((symbol, index) => {
+        const summary = state.summariesBySymbol[symbol];
+        const remote = remoteForSymbol(symbol);
+        const exposure = countExposure(remote);
+        const lockouts = summary?.active_lockouts || [];
+        const runtimeState = summary?.runtime_status?.state || "IDLE";
+        const blockedBy = accountPositionBlockingSymbol(symbol);
+        const staleIssues = staleIssuesForSymbol(symbol);
+        const tone = lockouts.length > 0
+          ? "tone-warn"
+          : blockedBy
+            ? "tone-neutral"
+            : staleIssues.length > 0
+              ? "tone-danger"
+              : exposure.total > 0
+                ? "tone-warn"
+                : runtimeTone(runtimeState);
+        const badge = lockouts.length > 0
+          ? "차단"
+          : blockedBy
+            ? "1포지션 대기"
+            : staleIssues.length > 0
+              ? staleDisplayText(staleIssues)
+              : exposure.total > 0
+                ? "노출 있음"
+                : symbolRuntimeStateText(summary);
+        const performance = summary?.trade_performance_summary || {};
+        const trades = Number(performance.total_trade_count ?? 0);
+        const winRate = trades > 0 ? formatPercent(performance.win_rate_pct) : "거래 없음";
+        const staleText = blockedBy ? "해당 없음" : staleDisplayText(staleIssues);
+        const reconcileText = blockedBy
+          ? `${blockedBy} 포지션 관리 중`
+          : formatAgo(summary?.runtime_status?.last_reconcile_ms);
+        return `
+          <article class="symbol-card" data-symbol-card="${escapeHtml(symbol)}" aria-selected="${String(symbol === current)}">
+            <div class="symbol-card-top">
+              <div>
+                <div class="symbol-card-title">${escapeHtml(symbol)}</div>
+                <div class="subtext">${escapeHtml(index + 1)}순위</div>
+              </div>
+              <span class="status-pill ${tone}">${escapeHtml(badge)}</span>
+            </div>
+            <div class="symbol-card-meta">
+              <div>포지션 ${escapeHtml(exposure.positions)} · 주문 ${escapeHtml(exposure.orders + exposure.algoOrders)}</div>
+              <div>락아웃 ${escapeHtml(lockouts.length)}</div>
+              <div>승률 ${escapeHtml(winRate)}</div>
+              <div>지연 ${escapeHtml(staleText)}</div>
+              <div>최근 리컨실 ${escapeHtml(reconcileText)}</div>
+            </div>
+          </article>
+        `;
+      }).join("");
+      document.getElementById("symbolOverview").innerHTML = cards;
+      document.querySelectorAll("[data-symbol-card]").forEach((card) => {
+        card.addEventListener("click", () => {
+          symbolInput.value = card.dataset.symbolCard || DEFAULT_SYMBOL;
+          state.summary = selectedSummary();
+          state.remoteState = selectedRemoteState();
+          refreshAll({ includeRemote: true }).catch((error) => setStatus(error.message, true));
+        });
+      });
+    }
+
+    function runtimeTone(runtimeState) {
+      if (runtimeState === "READY") return "tone-ok";
+      if (runtimeState === "PROTECTED" || runtimeState === "PAUSED" || runtimeState === "ENTRY_PENDING") return "tone-warn";
+      if (runtimeState === "ERROR") return "tone-danger";
+      return "tone-neutral";
+    }
+
+    function lockoutLabel(code) {
+      return lockoutLabels[code] || code || "알 수 없음";
+    }
+
+    function renderReadiness() {
+      const summary = state.summary;
+      const runtime = summary?.runtime_status || {};
+      const runtimeState = runtime.state || "IDLE";
+      const lockouts = summary?.active_lockouts || [];
+      const exposure = countExposure(state.remoteState);
+      const mainnetLoop = serviceBySuffix(".mainnet-loop");
+      const mainnetRunning = isServiceRunning(mainnetLoop);
+      const hasManagedState = Boolean(summary?.managed_trade_state || summary?.expected_state);
+      const activeAccountSymbol = accountPositionSymbol();
+      const staleIssues = staleIssuesBySymbol();
+      const reasons = [];
+      let label = "확인 중";
+      let subtext = "런타임 데이터를 기다리고 있습니다.";
+      let tone = "tone-neutral";
+
+      if (!summary) {
+        reasons.push({ label: "요약 미수신", tone: "tone-warn" });
+      } else if (!mainnetRunning) {
+        label = "자동실행 정지";
+        subtext = "메인넷 루프 서비스가 실행 중 상태가 아닙니다.";
+        tone = "tone-danger";
+        reasons.push({ label: "메인넷 루프 정지", tone: "tone-danger" });
+      } else if (runtimeState === "ERROR") {
+        label = "오류";
+        subtext = runtime.last_error || "런타임 오류 상태입니다.";
+        tone = "tone-danger";
+        reasons.push({ label: "runtime ERROR", tone: "tone-danger" });
+      } else if (staleIssues.length > 0) {
+        label = "데이터 지연";
+        subtext = `지연 항목: ${staleIssues.map((issue) => issue.chipLabel).join(" / ")}`;
+        tone = "tone-danger";
+        staleIssues.forEach((issue) => reasons.push({ label: issue.chipLabel, tone: issue.tone }));
+      } else if (lockouts.length > 0) {
+        label = "진입 차단";
+        subtext = lockouts.map((lockout) => lockoutLabel(lockout.code || lockout)).join(" / ");
+        tone = "tone-warn";
+        lockouts.forEach((lockout) => reasons.push({ label: lockoutLabel(lockout.code || lockout), tone: "tone-warn" }));
+      } else if (activeAccountSymbol || exposure.total > 0 || hasManagedState || runtimeState === "PROTECTED") {
+        label = "포지션 관리 중";
+        subtext = `${activeAccountSymbol || currentSymbol()} 포지션 관리 중`;
+        tone = "tone-warn";
+        reasons.push({ label: `${activeAccountSymbol || currentSymbol()} 1포지션 점유`, tone: "tone-warn" });
+      } else if (!state.remoteState) {
+        label = "원격 확인 필요";
+        subtext = "거래소 상태 확인 후 진입 가능 여부를 판단합니다.";
+        tone = "tone-warn";
+        reasons.push({ label: "거래소 미확인", tone: "tone-warn" });
+      } else if (runtimeState === "READY") {
+        label = "진입 대기 가능";
+        subtext = "메인넷 루프, 거래소 설정, 리스크 락아웃이 정상입니다.";
+        tone = "tone-ok";
+        reasons.push({ label: "루프 실행 중", tone: "tone-ok" });
+        reasons.push({ label: "락아웃 없음", tone: "tone-ok" });
+        reasons.push({ label: "노출 없음", tone: "tone-ok" });
+      } else {
+        label = runtimeStateLabels[runtimeState] || runtimeState;
+        subtext = "런타임 상태를 확인해야 합니다.";
+        tone = runtimeTone(runtimeState);
+        reasons.push({ label, tone });
+      }
+
+      document.getElementById("readinessValue").textContent = label;
+      document.getElementById("readinessSubtext").textContent = subtext;
+      setPill("readinessBadge", label, tone);
+      renderChips("readinessReasons", reasons, "확인 중");
+    }
+
+    function renderRuntime(summary) {
+      const runtime = summary?.runtime_status || {};
+      const runtimeState = runtime.state || "IDLE";
+      const runtimeText = runtimeStateLabels[runtimeState] || runtimeState;
+      const tone = runtimeTone(runtimeState);
+      const exposure = countExposure(state.remoteState);
+      const checkMark = Boolean(summary?.expected_state || summary?.managed_trade_state || exposure.positions > 0);
+      const blockedBy = accountPositionBlockingSymbol(currentSymbol());
+      const stale = blockedBy
+        ? { kline: false, mark: false, monitor: false, any: false }
+        : runtimeStaleFlags(runtime, {
+            checkMark,
+            klineThresholdMs: klineStaleThresholdMs(currentSymbol()),
+          });
+      const blockedText = blockedBy ? `${blockedBy} 포지션 관리 중` : null;
+      document.getElementById("runtimeStateValue").textContent = runtimeText;
+      setPill("runtimeStateBadge", runtimeText, tone);
+      renderRows("runtimeStateMeta", [
+        { label: "유저 스트림", value: runtime.active_listen_key ? "연결됨" : "미연결" },
+        { label: "마지막 유저 이벤트", value: formatAgo(runtime.last_user_stream_event_ms) },
+        { label: `마지막 ${klineLabelForSymbol(currentSymbol())}`, value: blockedText || formatAgo(runtime.last_execution_kline_close_ms), className: stale.kline ? "value-negative" : "" },
+        { label: "마지막 마크프라이스", value: checkMark ? formatAgo(runtime.last_mark_price_event_ms) : "포지션 없음", className: stale.mark ? "value-negative" : "" },
+        { label: "마지막 리컨실", value: blockedText || formatAgo(runtime.last_reconcile_ms), className: stale.monitor ? "value-negative" : "" },
+      ]);
+    }
+
+    function renderServices() {
+      const services = state.services?.services || [];
+      const mainnetLoop = serviceBySuffix(".mainnet-loop");
+      const dashboard = serviceBySuffix(".dashboard");
+      const mainnetRunning = isServiceRunning(mainnetLoop);
+      setPill("servicePill", mainnetRunning ? "메인넷 자동실행 ON" : "자동실행 확인 필요", mainnetRunning ? "tone-ok" : "tone-danger");
+      setPill("mainnetServiceBadge", mainnetRunning ? "실행 중" : "확인 필요", mainnetRunning ? "tone-ok" : "tone-danger");
+      document.getElementById("mainnetServiceValue").textContent = mainnetRunning ? "실행 중" : "확인 필요";
+      renderRows("mainnetServiceMeta", [
+        { label: "PID", value: mainnetLoop?.pid ? String(mainnetLoop.pid) : "없음" },
+        { label: "허브", value: isServiceRunning(dashboard) ? `실행 중 · PID ${dashboard.pid || "-"}` : "확인 필요" },
+      ]);
+      renderRows("serviceList", services.map((service) => ({
+        label: serviceName(service.label),
+        value: `${serviceStateText(service)}${service.pid ? ` · PID ${service.pid}` : ""}`,
+        className: isServiceRunning(service) ? "value-positive" : service.label.endsWith(".testnet-loop") ? "" : "value-negative",
+      })));
+    }
+
+    function renderExchange(remoteState) {
+      if (!remoteState) {
+        setPill("exchangePill", "거래소 미확인", "tone-warn");
+        setPill("exchangeStatusBadge", "미확인", "tone-warn");
+        document.getElementById("exposurePositionValue").textContent = "-";
+        document.getElementById("exposureOrdersValue").textContent = "-";
+        document.getElementById("exposureAlgoValue").textContent = "-";
+        document.getElementById("exchangeConfigValue").textContent = "-";
+        document.getElementById("exposurePositionMeta").textContent = "원격 조회 전";
+        document.getElementById("exchangeConfigMeta").textContent = "레버리지 / 마진 / 모드";
+        renderEmpty("remoteStatePanel", "거래소 상태를 아직 불러오지 못했습니다.");
+        document.getElementById("remoteStateRaw").textContent = pretty(remoteState);
+        return;
+      }
+      const exposure = countExposure(remoteState);
+      const config = remoteState.symbol_config || {};
+      const healthy = exposure.total === 0;
+      const configText = `${config.leverage ?? "-"}x`;
+      setPill("exchangePill", healthy ? "원격 대기 정상" : `열린 상태 ${exposure.total}건`, healthy ? "tone-ok" : "tone-warn");
+      setPill("exchangeStatusBadge", healthy ? "주문/포지션 없음" : `열린 상태 ${exposure.total}건`, healthy ? "tone-ok" : "tone-warn");
+      document.getElementById("exposurePositionValue").textContent = `${exposure.positions}건`;
+      document.getElementById("exposureOrdersValue").textContent = `${exposure.orders}건`;
+      document.getElementById("exposureAlgoValue").textContent = `${exposure.algoOrders}건`;
+      document.getElementById("exchangeConfigValue").textContent = configText;
+      document.getElementById("exposurePositionMeta").textContent = healthy ? "노출 없음" : "원격 열린 상태 존재";
+      document.getElementById("exchangeConfigMeta").textContent =
+        `${config.marginType || "-"} · ${remoteState.position_mode || "-"}`;
+      renderRows("remoteStatePanel", [
+        { label: "심볼", value: config.symbol || currentSymbol() },
+        { label: "레버리지", value: `${config.leverage ?? "-"}x` },
+        { label: "마진 방식", value: config.marginType || "-" },
+        { label: "포지션 모드", value: remoteState.position_mode || "-" },
+        { label: "최소 주문금액", value: remoteState.symbol_rules?.min_notional || "-" },
+        { label: "수량 스텝", value: remoteState.symbol_rules?.quantity_step || "-" },
+      ]);
+      document.getElementById("remoteStateRaw").textContent = pretty(remoteState);
+    }
+
+    function renderRisk(summary) {
+      const overview = summary?.account_risk_overview || {};
+      const lockouts = summary?.active_lockouts || [];
+      const currentR = Number(overview.recent_24h_realized_r ?? 0);
+      const maxDailyLossR = Number(overview.max_daily_loss_r ?? 0);
+      const cooldownMs = Number(overview.cooldown_remaining_ms ?? 0);
+      const blocked = lockouts.length > 0 || cooldownMs > 0 || currentR <= -maxDailyLossR;
+      const tone = blocked ? "tone-warn" : "tone-ok";
+      const label = blocked ? "차단 확인" : "락아웃 없음";
+      setPill("riskStatusBadge", label, tone);
+      setPill("lockoutBadge", label, tone);
+      document.getElementById("riskCapValue").textContent = `${formatSignedNumber(currentR, 2, "R")} / -${maxDailyLossR.toFixed(1)}R`;
+      renderRows("riskStatusMeta", [
+        { label: "연속 손실", value: `${overview.consecutive_losses ?? 0} / ${overview.max_consecutive_losses ?? 0}` },
+        { label: "쿨다운", value: formatCooldown(overview.cooldown_remaining_ms) },
+      ]);
+      renderRows("riskDetailPanel", [
+        { label: "최근 24시간 R", value: formatSignedNumber(overview.recent_24h_realized_r ?? 0, 2, "R"), className: signedValueClass(overview.recent_24h_realized_r ?? 0) },
+        { label: "최근 24시간 손익", value: formatSignedNumber(overview.recent_24h_pnl_after_fees_usdt ?? 0, 2, " USDT"), className: signedValueClass(overview.recent_24h_pnl_after_fees_usdt ?? 0) },
+        { label: "최근 24시간 거래", value: `${overview.recent_24h_trade_count ?? 0}건` },
+        { label: "손실 쿨다운", value: formatCooldown(overview.cooldown_remaining_ms) },
+      ]);
+      if (lockouts.length === 0) {
+        renderRows("lockoutPanel", [
+          { label: "활성 락아웃", value: "없음", className: "value-positive" },
+          { label: "자동 정지 기준", value: `${overview.max_daily_loss_r ?? 0}R / ${overview.max_consecutive_losses ?? 0}연패` },
+        ]);
+      } else {
+        renderRows("lockoutPanel", lockouts.map((lockout) => ({
+          label: lockoutLabel(lockout.code || lockout),
+          value: lockout.reason || lockout.details?.reason || "차단 중",
+          className: "value-negative",
+        })));
+      }
+    }
+
+    function renderAccountStatus(accountStatus) {
+      const usdt = accountStatus?.usdt;
+      if (!usdt) {
+        setPill("accountStatusBadge", "미확인", "tone-warn");
+        document.getElementById("accountAvailableValue").textContent = "-";
+        renderRows("accountStatusMeta", [
+          { label: "상태", value: "계좌 조회 전" },
+        ]);
+        return;
+      }
+      const available = Number(usdt.available_balance_usdt ?? 0);
+      const wallet = Number(usdt.wallet_balance_usdt ?? 0);
+      const tone = available > 0 ? "tone-ok" : "tone-warn";
+      setPill("accountStatusBadge", "추적 중", tone);
+      document.getElementById("accountAvailableValue").textContent =
+        formatNumber(usdt.available_balance_usdt, 2, " USDT");
+      renderRows("accountStatusMeta", [
+        { label: "Wallet", value: formatNumber(usdt.wallet_balance_usdt, 2, " USDT") },
+        { label: "Margin", value: formatNumber(usdt.margin_balance_usdt, 2, " USDT") },
+        { label: "미실현", value: formatSignedNumber(usdt.unrealized_pnl_usdt ?? 0, 2, " USDT"), className: signedValueClass(usdt.unrealized_pnl_usdt ?? 0) },
+        { label: "사용률", value: wallet > 0 ? formatPercent(((wallet - available) / wallet) * 100, 1) : "없음" },
+      ]);
+    }
+
+    function renderAccountEquityHistory(history) {
+      const points = Array.isArray(history?.points) ? history.points : [];
+      const summary = history?.summary || {};
+      const badgeTone = Number(summary.change_usdt ?? 0) >= 0 ? "tone-ok" : "tone-warn";
+      if (points.length < 2) {
+        setPill("accountEquityBadge", "기록 부족", "tone-warn");
+        document.getElementById("accountEquitySummary").innerHTML = "";
+        renderEmpty("accountEquitySummary", "USDT 계좌 스냅샷이 2개 이상 쌓이면 그래프가 표시됩니다.");
+        clearAccountEquityChart("스냅샷 대기");
+        document.getElementById("accountEquityNote").textContent = "허브가 계좌를 조회할 때마다 스냅샷이 누적됩니다.";
+        return;
+      }
+      setPill("accountEquityBadge", `${points.length}점`, badgeTone);
+      document.getElementById("accountEquitySummary").innerHTML = [
+        { label: "시작", value: formatNumber(summary.start_equity_usdt, 2, " USDT") },
+        { label: "현재", value: formatNumber(summary.current_equity_usdt, 2, " USDT") },
+        {
+          label: "변화",
+          value: `${formatSignedNumber(summary.change_usdt, 2, " USDT")} · ${formatSignedNumber(summary.change_pct, 2, "%")}`,
+          className: signedValueClass(summary.change_usdt),
+        },
+      ].map((item) => `
+        <div class="pnl-box">
+          <div class="label">${escapeHtml(item.label)}</div>
+          <div class="value ${item.className || ""}">${escapeHtml(item.value)}</div>
+        </div>
+      `).join("");
+      drawAccountEquityChart(points);
+      document.getElementById("accountEquityNote").textContent =
+        `${formatDateTime(summary.first_recorded_at_ms)} ~ ${formatDateTime(summary.last_recorded_at_ms)} · 최고 ${formatNumber(summary.high_equity_usdt, 2, " USDT")} / 최저 ${formatNumber(summary.low_equity_usdt, 2, " USDT")}`;
+    }
+
+    function clearAccountEquityChart(message) {
+      const canvas = document.getElementById("accountEquityChart");
+      const context = canvas.getContext("2d");
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const width = Math.max(320, Math.floor(rect.width));
+      const height = 240;
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+      context.fillStyle = "#667085";
+      context.font = "13px sans-serif";
+      context.textAlign = "center";
+      context.fillText(message, width / 2, height / 2);
+    }
+
+    function drawAccountEquityChart(points) {
+      const canvas = document.getElementById("accountEquityChart");
+      const context = canvas.getContext("2d");
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const width = Math.max(320, Math.floor(rect.width));
+      const height = 240;
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, width, height);
+
+      const margin = { left: 58, right: 16, top: 18, bottom: 34 };
+      const plotWidth = Math.max(1, width - margin.left - margin.right);
+      const plotHeight = Math.max(1, height - margin.top - margin.bottom);
+      const equityValues = points.map((point) => Number(point.equity_usdt)).filter(Number.isFinite);
+      const walletValues = points.map((point) => Number(point.wallet_balance_usdt)).filter(Number.isFinite);
+      const values = [...equityValues, ...walletValues];
+      let minValue = Math.min(...values);
+      let maxValue = Math.max(...values);
+      if (!Number.isFinite(minValue) || !Number.isFinite(maxValue)) {
+        clearAccountEquityChart("표시할 값 없음");
+        return;
+      }
+      if (minValue === maxValue) {
+        minValue -= 0.5;
+        maxValue += 0.5;
+      } else {
+        const pad = (maxValue - minValue) * 0.12;
+        minValue -= pad;
+        maxValue += pad;
+      }
+      const minTs = Number(points[0].recorded_at_ms);
+      const maxTs = Number(points[points.length - 1].recorded_at_ms);
+      const xFor = (timestamp) => {
+        if (maxTs === minTs) return margin.left + plotWidth;
+        return margin.left + ((Number(timestamp) - minTs) / (maxTs - minTs)) * plotWidth;
+      };
+      const yFor = (value) => margin.top + (1 - ((Number(value) - minValue) / (maxValue - minValue))) * plotHeight;
+
+      context.strokeStyle = "#e8edf3";
+      context.lineWidth = 1;
+      context.fillStyle = "#667085";
+      context.font = "11px sans-serif";
+      context.textAlign = "right";
+      context.textBaseline = "middle";
+      for (let index = 0; index <= 4; index += 1) {
+        const y = margin.top + (plotHeight * index / 4);
+        const value = maxValue - ((maxValue - minValue) * index / 4);
+        context.beginPath();
+        context.moveTo(margin.left, y);
+        context.lineTo(width - margin.right, y);
+        context.stroke();
+        context.fillText(value.toFixed(2), margin.left - 8, y);
+      }
+
+      const drawLine = (key, color, widthPx = 2) => {
+        const usable = points.filter((point) => Number.isFinite(Number(point[key])));
+        if (usable.length < 2) return;
+        context.beginPath();
+        usable.forEach((point, index) => {
+          const x = xFor(point.recorded_at_ms);
+          const y = yFor(point[key]);
+          if (index === 0) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        });
+        context.strokeStyle = color;
+        context.lineWidth = widthPx;
+        context.lineJoin = "round";
+        context.lineCap = "round";
+        context.stroke();
+      };
+
+      drawLine("wallet_balance_usdt", "#047857", 1.6);
+      drawLine("equity_usdt", "#2563eb", 2.4);
+
+      const start = points[0];
+      const end = points[points.length - 1];
+      context.fillStyle = "#475467";
+      context.textBaseline = "top";
+      context.textAlign = "left";
+      context.fillText(formatDateTime(start.recorded_at_ms), margin.left, height - 24);
+      context.textAlign = "right";
+      context.fillText(formatDateTime(end.recorded_at_ms), width - margin.right, height - 24);
+    }
+
+    function renderPerformance(summary) {
+      const performance = summary?.trade_performance_summary || {};
+      const incomePayload = state.accountIncomeSummary || {};
+      const income = incomePayload.summary || {};
+      const totalTrades = Number(performance.total_trade_count ?? 0);
+      const incomeRows = Number(income.row_count ?? 0);
+      const hasIncome = incomeRows > 0;
+      const localPnl = Number(performance.total_realized_pnl_after_fees_usdt ?? 0);
+      const actualNet = Number(income.trading_net_income_usdt ?? 0);
+      const symbolIncome = income.by_symbol?.[currentSymbol()] || null;
+      if (totalTrades <= 0 && !hasIncome) {
+        document.getElementById("performanceHighlightStrip").innerHTML = "";
+        renderEmpty("exchangeIncomePanel", "Binance 실제 income 기록이 없습니다.");
+        document.getElementById("exchangeIncomeNote").textContent = "거래소 income 기록이 잡히면 수수료와 펀딩까지 반영한 순손익이 표시됩니다.";
+        renderEmpty("performanceSummaryPanel", "아직 종료된 거래가 없습니다.");
+        document.getElementById("performanceNote").textContent = "첫 청산 후 승률, 손익비, 기대값이 자동으로 채워집니다.";
+        return;
+      }
+      const highlights = [];
+      if (hasIncome) {
+        highlights.push(
+          { label: "거래소 순손익", value: formatSignedNumber(income.trading_net_income_usdt, 4, " USDT") },
+          { label: "실현손익", value: formatSignedNumber(income.realized_pnl_usdt, 4, " USDT") },
+          { label: "수수료", value: formatSignedNumber(income.commission_usdt, 4, " USDT") },
+        );
+      }
+      if (totalTrades > 0) {
+        highlights.push(
+          { label: "승률", value: formatPercent(performance.win_rate_pct) },
+          { label: "로컬 추정", value: formatSignedNumber(performance.total_realized_pnl_after_fees_usdt, 4, " USDT") },
+          { label: "누적 R", value: formatSignedNumber(performance.total_realized_r, 2, "R") },
+        );
+      }
+      document.getElementById("performanceHighlightStrip").innerHTML = highlights.map((item) => `
+        <div class="pnl-box">
+          <div class="label">${escapeHtml(item.label)}</div>
+          <div class="value ${signedValueClass(item.value)}">${escapeHtml(item.value)}</div>
+        </div>
+      `).join("");
+      if (hasIncome) {
+        const exchangeRows = [
+          { label: "거래소 실제 순손익", value: formatSignedNumber(income.trading_net_income_usdt, 4, " USDT"), className: signedValueClass(income.trading_net_income_usdt) },
+          { label: "실현손익 / 수수료 / 펀딩", value: `${formatSignedNumber(income.realized_pnl_usdt, 4, " USDT")} / ${formatSignedNumber(income.commission_usdt, 4, " USDT")} / ${formatSignedNumber(income.funding_fee_usdt, 4, " USDT")}` },
+          { label: "기타 입출금/조정", value: formatSignedNumber(income.other_income_usdt, 4, " USDT"), className: signedValueClass(income.other_income_usdt) },
+          { label: "Income 기록 수", value: `${income.tracked_row_count ?? 0} / ${income.row_count ?? 0}건` },
+        ];
+        if (symbolIncome) {
+          exchangeRows.splice(1, 0, {
+            label: `${currentSymbol()} 실제 순손익`,
+            value: formatSignedNumber(symbolIncome.trading_net_income_usdt, 4, " USDT"),
+            className: signedValueClass(symbolIncome.trading_net_income_usdt),
+          });
+        }
+        if (totalTrades > 0 && Number.isFinite(actualNet) && Number.isFinite(localPnl)) {
+          exchangeRows.push({
+            label: "로컬 추정과 차이",
+            value: formatSignedNumber(actualNet - localPnl, 4, " USDT"),
+            className: signedValueClass(actualNet - localPnl),
+          });
+        }
+        renderRows("exchangeIncomePanel", exchangeRows);
+        document.getElementById("exchangeIncomeNote").textContent =
+          `Binance income ${formatDateTime(incomePayload.start_time_ms)} ~ ${formatDateTime(incomePayload.end_time_ms)} · 수수료/펀딩 반영`;
+      } else {
+        renderEmpty("exchangeIncomePanel", "Binance 실제 income 기록이 없습니다.");
+        document.getElementById("exchangeIncomeNote").textContent = "거래 종료 직후 동기화된 income 기록을 DB에서 읽습니다.";
+      }
+      if (totalTrades <= 0) {
+        renderEmpty("performanceSummaryPanel", "로컬 종료 거래 기록이 없습니다.");
+        document.getElementById("performanceNote").textContent = "로컬 기록은 전략 리뷰용이고, 계좌 증감은 위 거래소 실제 순손익을 우선 봅니다.";
+        return;
+      }
+      const profitFactor = performance.profit_factor === null || performance.profit_factor === undefined
+        ? "없음"
+        : Number(performance.profit_factor).toFixed(2);
+      renderRows("performanceSummaryPanel", [
+        { label: "로컬 종료 거래", value: `${performance.total_trade_count ?? 0}건` },
+        { label: "승 / 패 / 보합", value: `${performance.win_count ?? 0} / ${performance.loss_count ?? 0} / ${performance.flat_count ?? 0}` },
+        { label: "Profit Factor", value: profitFactor },
+        { label: "거래당 기대값", value: formatSignedNumber(performance.expectancy_r_per_trade, 2, "R"), className: signedValueClass(performance.expectancy_r_per_trade) },
+        { label: "로컬 평균 이익 / 손실", value: `${formatSignedNumber(performance.average_win_usdt, 2, " USDT")} / ${formatSignedNumber(performance.average_loss_usdt, 2, " USDT")}` },
+      ]);
+      document.getElementById("performanceNote").textContent =
+        `로컬 추정 집계 ${formatDateTime(performance.first_closed_at_ms)} ~ ${formatDateTime(performance.last_closed_at_ms)}`;
+    }
+
+    function renderTradeLedger(records, reviews) {
+      if (!records || records.length === 0) {
+        renderEmpty("tradeLedgerPanel", "아직 종료된 거래가 없습니다.");
+        return;
+      }
+      const reviewByTradeId = Object.fromEntries((reviews || []).map((review) => [review.trade_id, review]));
+      document.getElementById("tradeLedgerPanel").innerHTML = records.map((record) => {
+        const pnl = Number(record.realized_pnl_after_fees_usdt ?? record.realized_pnl_usdt ?? 0);
+        const realizedR = Number(record.hard_stop_trigger_loss_usdt ?? 0) > 0
+          ? pnl / Number(record.hard_stop_trigger_loss_usdt)
+          : 0;
+        const review = reviewByTradeId[record.trade_id] || {};
+        return `
+          <div class="trade-row">
+            <div>
+              <strong>${escapeHtml(formatDateTime(record.closed_at_ms))}</strong>
+              <div class="subtext">${escapeHtml(record.trade_id || "-")}</div>
+            </div>
+            <div>
+              <strong>${escapeHtml(record.side || "-")}</strong>
+              <div class="subtext">${escapeHtml(record.exit_reason || "-")}</div>
+            </div>
+            <div class="${signedValueClass(pnl)}">
+              <strong>${escapeHtml(formatSignedNumber(pnl, 2, " USDT"))}</strong>
+              <div class="subtext">${escapeHtml(formatSignedNumber(realizedR, 2, "R"))}</div>
+            </div>
+            <div>
+              <strong>${escapeHtml(review.primary_cause || "리뷰 없음")}</strong>
+              <div class="subtext">${escapeHtml(review.explanation || review.market_pattern || "자동 리뷰 대기")}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTimeline(targetId, items, formatter, emptyMessage = "표시할 기록이 없습니다.") {
+      if (!items || items.length === 0) {
+        renderEmpty(targetId, emptyMessage);
+        return;
+      }
+      document.getElementById(targetId).innerHTML = items.map((item) => formatter(item)).join("");
+    }
+
+    function incidentItem(item) {
+      const tone = levelTones[item.level] || "tone-neutral";
+      return `
+        <article class="timeline-item">
+          <div class="timeline-top">
+            <div>
+              <span class="chip ${tone}">${escapeHtml(item.level || "INFO")}</span>
+              <strong>${escapeHtml(item.message || item.event_type || "incident")}</strong>
+              <div class="subtext">${escapeHtml(item.details?.reason || item.details?.symbol || item.event_type || "")}</div>
+            </div>
+            <div class="time">
+              <div>${escapeHtml(formatDateTime(item.recorded_at_ms))}</div>
+              <div>${escapeHtml(formatAgo(item.recorded_at_ms))}</div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function genericEventItem(item) {
+      const eventAt = item.recorded_at_ms || item.event_time_ms || item.closed_at_ms;
+      return `
+        <article class="timeline-item">
+          <div class="timeline-top">
+            <div>
+              <strong>${escapeHtml(item.event_type || item.message || "이벤트")}</strong>
+              <div class="subtext">${escapeHtml(item.message || item.reason || "")}</div>
+            </div>
+            <div class="time">
+              <div>${escapeHtml(formatDateTime(eventAt))}</div>
+              <div>${escapeHtml(formatAgo(eventAt))}</div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function reviewItem(item) {
+      const outcomeClass = item.outcome === "LOSS" ? "tone-danger" : item.outcome === "WIN" ? "tone-ok" : "tone-neutral";
+      return `
+        <article class="timeline-item">
+          <div class="timeline-top">
+            <div>
+              <span class="chip ${outcomeClass}">${escapeHtml(item.outcome || "REVIEW")}</span>
+              <strong>${escapeHtml(item.primary_cause || "리뷰 기록")}</strong>
+              <div class="subtext">${escapeHtml(item.explanation || item.market_pattern || "")}</div>
+            </div>
+            <div class="time">
+              <div>${escapeHtml(formatDateTime(item.closed_at_ms || item.recorded_at_ms))}</div>
+              <div>${escapeHtml(formatAgo(item.closed_at_ms || item.recorded_at_ms))}</div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderStatePanels(summary) {
+      const expected = summary?.expected_state;
+      const managed = summary?.managed_trade_state;
+      const snapshot = summary?.latest_account_snapshot;
+      if (!expected) {
+        renderEmpty("expectedStatePanel", "기대 상태 없음");
+      } else {
+        renderRows("expectedStatePanel", [
+          { label: "예상 수량", value: String(expected.expected_position_qty ?? "-") },
+          { label: "손절 마크가", value: String(expected.expected_stop_price_mark ?? "-") },
+          { label: "레버리지", value: String(expected.expected_leverage ?? "-") },
+          { label: "업데이트", value: formatDateTime(expected.updated_at_ms) },
+        ]);
+      }
+      if (!managed) {
+        renderEmpty("managedStatePanel", "관리 중 포지션 없음");
+      } else {
+        renderRows("managedStatePanel", [
+          { label: "방향", value: managed.side || "-" },
+          { label: "수량", value: String(managed.quantity ?? "-") },
+          { label: "진입 평균가", value: String(managed.entry_contract_price_avg ?? "-") },
+          { label: "보유 봉", value: String(managed.bars_held ?? "-") },
+        ]);
+      }
+      if (!snapshot) {
+        renderEmpty("snapshotPanel", "스냅샷 없음");
+      } else {
+        renderRows("snapshotPanel", [
+          { label: "종류", value: snapshot.snapshot_type || "-" },
+          { label: "기록 시각", value: formatDateTime(snapshot.recorded_at_ms) },
+          { label: "리컨실", value: snapshot.payload?.ok ? "OK" : "확인 필요", className: snapshot.payload?.ok ? "value-positive" : "value-negative" },
+          { label: "mismatch", value: String(snapshot.payload?.mismatches?.length ?? 0) },
+        ]);
+      }
+      document.getElementById("summaryRaw").textContent = pretty(summary);
+      document.getElementById("snapshotRaw").textContent = pretty(snapshot);
+    }
+
+    function renderStrategy(summary) {
+      const strategy = summary?.strategy_context || {};
+      const symbol = currentSymbol();
+      const profilesBySymbol = strategy.profiles_by_symbol || {};
+      const symbolProfiles = Array.isArray(profilesBySymbol[symbol]) ? profilesBySymbol[symbol] : null;
+      const profiles = symbolProfiles || (Array.isArray(strategy.profiles) ? strategy.profiles : []);
+      const rows = [
+        { label: "모드", value: `${strategy.strategy_mode || "best_pair_v1"} · rule-only` },
+      ];
+      if (strategy.runtime_stream_interval_by_symbol) {
+        rows.push({
+          label: "감시 봉",
+          value: Object.entries(strategy.runtime_stream_interval_by_symbol)
+            .map(([itemSymbol, interval]) => `${itemSymbol}:${interval}`)
+            .join(" / "),
+        });
+      } else {
+        rows.push(
+          { label: "실행 봉", value: Array.isArray(strategy.execution_timeframes) ? strategy.execution_timeframes.join(" / ") : "-" },
+          { label: "상위 봉", value: Array.isArray(strategy.higher_timeframes) ? strategy.higher_timeframes.join(" / ") : "-" },
+        );
+      }
+      rows.push(...profiles.slice(0, 4).map((profile) => ({
+        label: profile.name,
+        value: `${profile.allow_long_entries ? "LONG" : ""}${profile.allow_long_entries && profile.allow_short_entries ? " / " : ""}${profile.allow_short_entries ? "SHORT" : ""} · ${profile.execution_timeframe} · 조건 ${profile.active_condition_count}`,
+      })));
+      renderRows("strategyList", rows);
+      document.getElementById("headlineSubtext").textContent =
+        `${symbol} · ${strategy.strategy_mode || "best_pair_v1"} · ${configuredSymbols().join(" > ")} · rule-only`;
+    }
+
+    function renderOperationLog() {
+      const target = document.getElementById("operationLogPanel");
+      if (!target) return;
+      if (state.operationLog.length === 0) {
+        renderEmpty("operationLogPanel", "운영 로그 없음");
+        return;
+      }
+      renderRows("operationLogPanel", state.operationLog.map((item) => ({
+        label: formatDateTime(item.at),
+        value: item.message,
+        className: item.isError ? "value-negative" : "",
+      })));
+    }
+
+    function renderSummary(summary) {
+      state.summary = summary;
+      renderRuntime(summary);
+      renderRisk(summary);
+      renderPerformance(summary);
+      renderTradeLedger(summary.recent_trade_records || [], summary.recent_trade_reviews || []);
+      renderTimeline("reviewList", summary.recent_trade_reviews || [], reviewItem, "아직 자동 리뷰가 없습니다.");
+      renderTimeline("incidentList", summary.recent_incidents || [], incidentItem);
+      renderTimeline(
+        "eventList",
+        [...(summary.recent_order_events || []), ...(summary.recent_position_events || [])]
+          .sort((left, right) => Number(right.event_time_ms || right.recorded_at_ms || 0) - Number(left.event_time_ms || left.recorded_at_ms || 0)),
+        genericEventItem,
+      );
+      renderStatePanels(summary);
+      renderStrategy(summary);
+    }
+
+    function renderAll() {
+      const summary = selectedSummary();
+      state.summary = summary;
+      state.remoteState = selectedRemoteState();
+      renderSymbolTabs();
+      renderSymbolOverview();
+      if (summary) renderSummary(summary);
+      renderServices();
+      renderExchange(state.remoteState);
+      renderAccountStatus(state.accountStatus);
+      renderAccountEquityHistory(state.accountEquityHistory);
+      renderReadiness();
+      document.getElementById("lastRefreshValue").textContent =
+        state.lastRefreshAt ? `갱신 ${formatDateTime(state.lastRefreshAt)}` : "갱신 전";
+      displayRangeValue.textContent = displayRangeLabel();
+    }
+
+    async function fetchJson(url, options = undefined) {
+      const response = await fetch(url, options);
+      const payload = await response.json();
+      if (!response.ok || payload.status !== "ok") {
+        throw new Error(payload.error || `${url} 요청 실패`);
+      }
+      return payload.data;
+    }
+
+    async function fetchSummaryData(symbol = currentSymbol()) {
+      const payload = await fetchJson(`/api/summary?symbol=${encodeURIComponent(symbol)}&incident_limit=20&hours=${encodeURIComponent(String(state.displayHours))}`);
+      return payload.summary;
+    }
+
+    function fetchServiceStatusData() {
+      return fetchJson("/api/service-status");
+    }
+
+    function fetchAccountStatusData() {
+      return fetchJson("/api/account-status");
+    }
+
+    function fetchAccountEquityHistoryData() {
+      return fetchJson(`/api/account-equity-history?hours=${encodeURIComponent(String(state.displayHours))}&max_points=360`);
+    }
+
+    function fetchAccountIncomeSummaryData() {
+      return fetchJson(`/api/account-income-summary?hours=${encodeURIComponent(String(state.displayHours))}&max_rows=10000&recent_limit=50`);
+    }
+
+    async function fetchRemoteStateData(symbol = currentSymbol()) {
+      const payload = await fetchJson(`/api/remote-state?symbol=${encodeURIComponent(symbol)}`);
+      return payload.remote_state;
+    }
+
+    async function refreshAll({ includeRemote = false } = {}) {
+      setStatus(`상태 갱신 중 · 표시 기간 ${displayRangeLabel()}`);
+      const symbols = configuredSymbols();
+      const summaryRequests = symbols.map((symbol) => [`summary:${symbol}`, fetchSummaryData(symbol)]);
+      const requests = [
+        ...summaryRequests,
+        ["services", fetchServiceStatusData()],
+        ["accountStatus", fetchAccountStatusData()],
+        ["accountEquityHistory", fetchAccountEquityHistoryData()],
+        ["accountIncomeSummary", fetchAccountIncomeSummaryData()],
+      ];
+      if (includeRemote || !state.remoteState) {
+        requests.push([`remoteState:${currentSymbol()}`, fetchRemoteStateData(currentSymbol())]);
+      }
+      const results = await Promise.all(requests.map(async ([key, request]) => {
+        try {
+          return [key, await request, null];
+        } catch (error) {
+          return [key, null, error];
+        }
+      }));
+      const errors = [];
+      for (const [key, value, error] of results) {
+        if (error) {
+          errors.push(`${key}: ${error.message}`);
+          continue;
+        }
+        if (String(key).startsWith("summary:")) {
+          const symbol = String(key).split(":")[1];
+          state.summariesBySymbol[symbol] = value;
+          if (symbol === currentSymbol()) {
+            state.summary = value;
+          }
+        } else if (String(key).startsWith("remoteState:")) {
+          const symbol = String(key).split(":")[1];
+          state.remoteStatesBySymbol[symbol] = value;
+          if (symbol === currentSymbol()) {
+            state.remoteState = value;
+          }
+        } else if (key === "accountIncomeSummary") {
+          state.accountIncomeSummary = value;
+        } else {
+          state[key] = value;
+        }
+      }
+      state.lastRefreshAt = Date.now();
+      renderAll();
+      if (errors.length > 0) {
+        setStatus(`일부 갱신 실패 · ${errors.join(" / ")}`, true);
+      } else {
+        setStatus(`갱신 완료 · ${formatDateTime(state.lastRefreshAt)} · 표시 기간 ${displayRangeLabel()}`);
+      }
+    }
+
+    async function runAction(action) {
+      const payload = {
+        action,
+        symbol: currentSymbol(),
+      };
+      const liveActions = ["ensure_config", "monitor_once", "manage_position_once", "auto_cycle_once"];
+      if (ENVIRONMENT === "mainnet" && liveActions.includes(action)) {
+        const confirmed = window.confirm(`${ENVIRONMENT_LABEL}에서 ${actionLabels[action] || action} 실행`);
+        if (!confirmed) {
+          setStatus(`${actionLabels[action] || action} 취소됨`);
+          return;
+        }
+        payload.confirm_live = true;
+      }
+      setStatus(`${actionLabels[action] || action} 실행 중...`);
+      const response = await fetch("/api/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const body = await response.json();
+      if (!response.ok || body.status !== "ok") {
+        throw new Error(body.error || `${actionLabels[action] || action} 실패`);
+      }
+      await refreshAll({
+        includeRemote: ["remote_state", "ensure_config", "monitor_once", "manage_position_once", "auto_cycle_once"].includes(action),
+      });
+      setStatus(`${actionLabels[action] || action} 완료`);
+    }
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+        document.querySelectorAll(".tab-button").forEach((item) => {
+          item.setAttribute("aria-selected", String(item.dataset.tab === tab));
+        });
+        document.querySelectorAll(".tab-panel").forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.tabPanel === tab);
+        });
+      });
+    });
+
+    refreshAllButton.addEventListener("click", () => {
+      refreshAll({ includeRemote: true }).catch((error) => setStatus(error.message, true));
+    });
+
+    symbolInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        refreshAll({ includeRemote: true }).catch((error) => setStatus(error.message, true));
+      }
+    });
+
+    displayRangeSelect.addEventListener("change", () => {
+      syncDisplayRangeControls({ persist: true });
+      refreshAll({ includeRemote: false }).catch((error) => setStatus(error.message, true));
+    });
+
+    displayRangeDaysInput.addEventListener("change", () => {
+      displayRangeSelect.value = "custom";
+      syncDisplayRangeControls({ persist: true });
+      refreshAll({ includeRemote: false }).catch((error) => setStatus(error.message, true));
+    });
+
+    displayRangeDaysInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        displayRangeSelect.value = "custom";
+        syncDisplayRangeControls({ persist: true });
+        refreshAll({ includeRemote: false }).catch((error) => setStatus(error.message, true));
+      }
+    });
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        runAction(button.dataset.action).catch((error) => setStatus(error.message, true));
+      });
+    });
+
+    initializeDisplayRangeControls();
+    refreshAll({ includeRemote: true }).catch((error) => setStatus(error.message, true));
+    setInterval(() => {
+      refreshAll({ includeRemote: false }).catch((error) => setStatus(error.message, true));
+    }, AUTO_REFRESH_MS);
+  </script>
+</body>
+</html>

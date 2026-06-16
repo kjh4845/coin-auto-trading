@@ -1,0 +1,63 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Node / browser tooling
+node_modules/
+npm-debug.log*
+playwright-report/
+test-results/
+
+# Runtime data, market data, account state, and generated reports
+data/**
+!data/
+!data/.gitkeep
+!data/raw/
+!data/raw/.gitkeep
+!data/features/
+!data/features/.gitkeep
+!data/backtests/
+!data/backtests/.gitkeep
+!data/runtime/
+!data/runtime/.gitkeep
+
+# Local OS/editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Large generated datasets
+*.parquet
+*.feather
+*.arrow

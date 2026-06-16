@@ -1,0 +1,11 @@
+{
+  "name": "ai-auto-trading-dashboard-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dashboard:smoke": "node tools/dashboard_smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.54.2"
+  }
+}

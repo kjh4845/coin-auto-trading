@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "docs/schemas/trade_log_v1.schema.json",
+  "title": "Trade Log V1",
+  "description": "Versioned trade record for futures runtime, review, and retraining pipelines.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trade_id",
+    "symbol",
+    "side",
+    "position_mode",
+    "margin_mode",
+    "opened_at",
+    "closed_at",
+    "entry_order_type",
+    "exit_reason",
+    "policy_version",
+    "strategy_version",
+    "feature_schema_version",
+    "model_base",
+    "adapter_version",
+    "dataset_version",
+    "entry_contract_price_avg",
+    "entry_mark_price",
+    "exit_contract_price_avg",
+    "exit_mark_price",
+    "filled_quantity",
+    "leverage_at_entry",
+    "filled_entry_notional",
+    "entry_initial_margin_fixed",
+    "hard_stop_trigger_loss_usdt",
+    "hard_stop_trigger_price_mark",
+    "hard_stop_working_type",
+    "realized_pnl_usdt",
+    "fees_usdt",
+    "slippage_usdt",
+    "max_favorable_excursion_usdt",
+    "max_adverse_excursion_usdt"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "trade_log_v1"
+    },
+    "trade_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "symbol": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{2,30}$"
+    },
+    "side": {
+      "type": "string",
+      "enum": ["LONG", "SHORT"]
+    },
+    "position_mode": {
+      "type": "string",
+      "enum": ["ONE_WAY"]
+    },
+    "margin_mode": {
+      "type": "string",
+      "enum": ["ISOLATED"]
+    },
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "entry_order_type": {
+      "type": "string",
+      "enum": ["MARKET", "LIMIT"]
+    },
+    "exit_reason": {
+      "type": "string",
+      "enum": [
+        "HARD_STOP_MARK_PRICE",
+        "BREAK_EVEN_STOP_EXIT",
+        "ATR_TRAIL_EXIT",
+        "EARLY_FAIL_EXIT",
+        "FIXED_TAKE_PROFIT",
+        "PARTIAL_TAKE_PROFIT",
+        "TIME_STOP",
+        "AI_DEFENSIVE_EXIT",
+        "MANUAL_EMERGENCY_EXIT",
+        "SYSTEM_FAILSAFE_EXIT",
+        "OTHER"
+      ]
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "strategy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feature_schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime_version": {
+      "type": ["string", "null"]
+    },
+    "model_base": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Use 'rule_only' when no model influenced the trade; otherwise store the base model identifier."
+    },
+    "adapter_version": {
+      "type": ["string", "null"]
+    },
+    "dataset_version": {
+      "type": ["string", "null"],
+      "description": "Null until the trade is promoted into a training dataset lineage."
+    },
+    "review_labeler_version": {
+      "type": ["string", "null"]
+    },
+    "entry_contract_price_avg": {
+      "type": "number"
+    },
+    "entry_mark_price": {
+      "type": "number"
+    },
+    "exit_contract_price_avg": {
+      "type": "number"
+    },
+    "exit_mark_price": {
+      "type": "number"
+    },
+    "filled_quantity": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "leverage_at_entry": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "filled_entry_notional": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "entry_initial_margin_fixed": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "hard_stop_trigger_loss_usdt": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "hard_stop_trigger_price_mark": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "hard_stop_working_type": {
+      "const": "MARK_PRICE"
+    },
+    "realized_pnl_usdt": {
+      "type": "number"
+    },
+    "realized_pnl_after_fees_usdt": {
+      "type": ["number", "null"]
+    },
+    "fees_usdt": {
+      "type": "number",
+      "minimum": 0
+    },
+    "slippage_usdt": {
+      "type": "number",
+      "minimum": 0
+    },
+    "slippage_bps": {
+      "type": ["number", "null"]
+    },
+    "max_favorable_excursion_usdt": {
+      "type": "number"
+    },
+    "max_adverse_excursion_usdt": {
+      "type": "number"
+    },
+    "signal_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "ai_snapshot": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "regime": {
+          "type": "string"
+        },
+        "setup_quality": {
+          "type": "number"
+        },
+        "entry_action": {
+          "type": "string"
+        },
+        "exit_action": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "latency_ms": {
+          "type": "number"
+        },
+        "latency_limit_ms": {
+          "type": "number"
+        },
+        "error": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "atr_trail_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts", "trail_price_contract"],
+        "properties": {
+          "ts": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trail_price_contract": {
+            "type": "number"
+          }
+        }
+      },
+      "default": []
+    },
+    "notes": {
+      "type": ["string", "null"]
+    }
+  }
+}
